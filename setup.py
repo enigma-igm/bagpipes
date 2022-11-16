@@ -31,7 +31,7 @@ setup(
 
     install_requires=["numpy>=1.14.2", "corner", "pymultinest>=2.11",
                       "astropy", "matplotlib>=2.2.2", "scipy", "msgpack",
-                      "deepdish", "pandas<=1.1.5"],
+                      "deepdish", "pandas"],
 
     project_urls={
         "readthedocs": "https://bagpipes.readthedocs.io",
