@@ -91,7 +91,7 @@ class fit(object):
         self.fitted_model = fitted_model(galaxy, self.fit_instructions,
                                          time_calls=time_calls)
 
-    def fit(self, verbose=False, n_live=400, use_MPI=True):
+    def fit(self, verbose=False, quiet=False, n_live=400, use_MPI=True):
         """ Fit the specified model to the input galaxy data.
 
         Parameters
@@ -100,6 +100,9 @@ class fit(object):
         verbose : bool - optional
             Set to True to get progress updates from the sampler.
 
+        quiet : bool - optional
+            Set to True to suppress all screen output from the fitting.
+
         n_live : int - optional
             Number of live points: reducing speeds up the code but may
             lead to unreliable results.
@@ -107,14 +110,16 @@ class fit(object):
 
         if "lnz" in list(self.results):
             if rank == 0:
-                print("Fitting not performed as results have already been"
+                if not quiet:
+                    print("Fitting not performed as results have already been"
                       + " loaded from " + self.fname[:-1] + ".h5. To start"
                       + " over delete this file or change run.\n")
 
             return
 
         if rank == 0 or not use_MPI:
-            print("\nBagpipes: fitting object " + self.galaxy.ID + "\n")
+            if not quiet:
+                print("\nBagpipes: fitting object " + self.galaxy.ID + "\n")
 
             start_time = time.time()
 
@@ -130,7 +135,8 @@ class fit(object):
         if rank == 0 or not use_MPI:
             runtime = time.time() - start_time
 
-            print("\nCompleted in " + str("%.1f" % runtime) + " seconds.\n")
+            if not quiet:
+                print("\nCompleted in " + str("%.1f" % runtime) + " seconds.\n")
 
             # Load MultiNest outputs and save basic quantities to file.
             samples2d = np.loadtxt(self.fname + "post_equal_weights.dat")
@@ -151,7 +157,8 @@ class fit(object):
 
             os.system("rm " + self.fname + "*")
 
-            self._print_results()
+            if not quiet:
+                self._print_results()
 
             # Create a posterior object to hold the results of the fit.
             self.posterior = posterior(self.galaxy, run=self.run,
