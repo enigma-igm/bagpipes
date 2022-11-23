@@ -7,8 +7,6 @@ from astropy.cosmology import FlatLambdaCDM
 
 def make_dirs(run="."):
     """ Make local Bagpipes directory structure in working dir. """
-    from IPython import embed
-    embed()
     if not os.path.exists(working_dir + "/pipes"):
         os.mkdir(working_dir + "/pipes")
 
